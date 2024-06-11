@@ -2,11 +2,9 @@ import './index.css';
 import * as Blockly from 'blockly';
 import { ergoScriptGenerator, blocks } from './ergoscript';
 
-// Register the blocks and generator with Blockly
 Blockly.common.defineBlocks(
 	Blockly.common.createBlockDefinitionsFromJsonArray(blocks));
 
-// Set up UI elements and inject Blockly
 const codeDiv = document.getElementById('generatedCode').firstChild;
 const blocklyDiv = document.getElementById('blocklyDiv');
 
