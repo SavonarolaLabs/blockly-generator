@@ -7,13 +7,15 @@ ergoScriptGenerator.ORDER_LOGICAL_AND = 1;
 ergoScriptGenerator.ORDER_LOGICAL_OR = 1;
 ergoScriptGenerator.ORDER_CONDITIONAL = 2;
 
+let uniqueKeys
+
 ergoScriptGenerator.init = function (workspace) {
-	// Initialize the generator, if needed.
+	uniqueKeys = new Set();
 };
 
 ergoScriptGenerator.finish = function (code) {
-	// Finalize the generated code.
-	return code;
+	const uniqueKeysArray = Array.from(uniqueKeys).map((k,i) =>`  val ${k} = SELF.R4[Coll[SigmaProp]].get(${i})`).join("\n");
+	return `{\n${uniqueKeysArray}\n\n${code.split('\n').map(line => '  '+line).join("\n")}\n}`;
 };
 
 ergoScriptGenerator.forBlock = Object.create(null);
@@ -21,13 +23,14 @@ ergoScriptGenerator.forBlock = Object.create(null);
 ergoScriptGenerator.forBlock["public_key"] = function (block) {
 	const key = block.getFieldValue("key");
 	const code = `pk${key}`;
+	uniqueKeys.add(code);
 	return [code, ergoScriptGenerator.ORDER_ATOMIC];
 };
 
 ergoScriptGenerator.forBlock["public_key_threshold"] = function (block) {
 	const key = block.getFieldValue("key");
-	console.log(block);
 	const code = `pk${key}`;
+	uniqueKeys.add(code);
 	return code;
 };
 
@@ -92,6 +95,7 @@ ergoScriptGenerator.forBlock["threshold"] = function (block) {
 		const key = cb.getFieldValue("key");
 		if (key) {
 			txt += `pk${key}, `;
+			uniqueKeys.add(`pk${key}`);
 			max++;
 		}
 		cb = cb.getNextBlock();
