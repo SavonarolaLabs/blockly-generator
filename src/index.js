@@ -1,23 +1,17 @@
-/**
- * @license
- * Copyright 2023 Google LLC
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import './index.css';
 import * as Blockly from 'blockly';
-import {blocks, blocksDefinitions} from './blocks';
-import { ergoScriptGenerator } from './ergoscript';
+import { ergoScriptGenerator, blocks } from './ergoscript';
 
 // Register the blocks and generator with Blockly
-Blockly.common.defineBlocks(blocks);
+Blockly.common.defineBlocks(
+	Blockly.common.createBlockDefinitionsFromJsonArray(blocks));
 
 // Set up UI elements and inject Blockly
 const codeDiv = document.getElementById('generatedCode').firstChild;
 const blocklyDiv = document.getElementById('blocklyDiv');
 
 export const toolbox = {
-  contents: blocksDefinitions.map(b =>({
+  contents: blocks.map(b =>({
     kind: 'block',
     type: b.type,
   }))
@@ -30,7 +24,6 @@ const runCode = () => {
 };
 
 runCode();
-
 
 ws.addChangeListener((e) => {
   if (
