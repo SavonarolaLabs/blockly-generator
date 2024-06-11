@@ -10,6 +10,7 @@ code {
 
 #pageContainer {
   display: flex;
+  flex-direction: column-reverse;
   width: 100%;
   max-width: 100vw;
   height: 100vh;
@@ -17,24 +18,8 @@ code {
 
 #blocklyDiv {
   flex-basis: 100%;
-  height: 100%;
+  width:100%;
   min-width: 600px;
 }
 
-#outputPane {
-  display: flex;
-  flex-direction: column;
-  width: 400px;
-  flex: 0 0 400px;
-  overflow: auto;
-  margin: 1rem;
-}
 
-#generatedCode {
-  height: 50%;
-  background-color: rgb(247, 240, 228);
-}
-
-#output {
-  height: 50%;
-}
