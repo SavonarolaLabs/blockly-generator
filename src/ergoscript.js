@@ -73,7 +73,11 @@ ergoScriptGenerator.forBlock["timelock"] = function (block) {
 		"ELSE",
 		ergoScriptGenerator.ORDER_ATOMIC
 	);
-	const code = `(blockheight <= ${blockheight} ? ${valueDo} : ${valueElse})`;
+	let code = `if(HEIGHT <= ${blockheight}){${valueDo}}`;
+	
+	if(valueElse){
+		code += `else{${valueElse}}`
+	}
 	return [code, ergoScriptGenerator.ORDER_CONDITIONAL];
 };
 
