@@ -26,7 +26,8 @@ ergoScriptGenerator.forBlock["public_key"] = function (block) {
 
 ergoScriptGenerator.forBlock["public_key_threshold"] = function (block) {
 	const key = block.getFieldValue("key");
-	const code = `pk${key}, `;
+	console.log(block);
+	const code = `pk${key}`;
 	return code;
 };
 
@@ -72,8 +73,17 @@ ergoScriptGenerator.forBlock['timelock'] = function (block) {
 ergoScriptGenerator.forBlock["threshold"] = function (block) {
 	const min = block.getFieldValue("min");
 	const max = block.getFieldValue("max");
-	const statementsKeys = ergoScriptGenerator.statementToCode(block, "KEYS");
-	const code = `threshold(${min}, ${max}, [${statementsKeys}])`;
+
+	let cb = block;
+	let txt = "";
+	while(cb.childBlocks_.length > 0){
+		cb = cb.childBlocks_[0];
+		txt += " pk"+cb.getFieldValue('key') + ","
+	}
+	if(txt.length > 0){
+		txt = txt.slice(0, -1)
+	}
+	const code = `threshold(${min}, ${max}, [${txt}])`;
 	return [code, ergoScriptGenerator.ORDER_ATOMIC];
 };
 
