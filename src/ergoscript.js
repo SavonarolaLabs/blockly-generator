@@ -61,29 +61,45 @@ ergoScriptGenerator.forBlock["or"] = function (block) {
 	return [code, ergoScriptGenerator.ORDER_LOGICAL_OR];
 };
 
-ergoScriptGenerator.forBlock['timelock'] = function (block) {
-	const blockheight = block.getFieldValue('blockheight');
-	const valueDo = ergoScriptGenerator.valueToCode(block, 'DO', ergoScriptGenerator.ORDER_ATOMIC);
-	const valueElse = ergoScriptGenerator.valueToCode(block, 'ELSE', ergoScriptGenerator.ORDER_ATOMIC);
+ergoScriptGenerator.forBlock["timelock"] = function (block) {
+	const blockheight = block.getFieldValue("blockheight");
+	const valueDo = ergoScriptGenerator.valueToCode(
+		block,
+		"DO",
+		ergoScriptGenerator.ORDER_ATOMIC
+	);
+	const valueElse = ergoScriptGenerator.valueToCode(
+		block,
+		"ELSE",
+		ergoScriptGenerator.ORDER_ATOMIC
+	);
 	const code = `(blockheight <= ${blockheight} ? ${valueDo} : ${valueElse})`;
 	return [code, ergoScriptGenerator.ORDER_CONDITIONAL];
-  };
-  
+};
 
 ergoScriptGenerator.forBlock["threshold"] = function (block) {
 	const min = block.getFieldValue("min");
-	const max = block.getFieldValue("max");
 
-	let cb = block;
+	let max = 0;
+	let cb = block.getInputTargetBlock("KEYS");
 	let txt = "";
-	while(cb.childBlocks_.length > 0){
-		cb = cb.childBlocks_[0];
-		txt += " pk"+cb.getFieldValue('key') + ","
+
+	while (cb) {
+		const key = cb.getFieldValue("key");
+		if (key) {
+			txt += `pk${key}, `;
+			max++;
+		}
+		cb = cb.getNextBlock();
 	}
-	if(txt.length > 0){
-		txt = txt.slice(0, -1)
+
+	if (txt.length > 0) {
+		txt = txt.slice(0, -2); // Remove the trailing comma and space
 	}
-	const code = `threshold(${min}, ${max}, [${txt}])`;
+
+	block.setFieldValue(max.toString(), "max");
+
+	const code = `atLeast(${min}, Coll(${txt}))`;
 	return [code, ergoScriptGenerator.ORDER_ATOMIC];
 };
 
@@ -170,7 +186,7 @@ export const blocks = [
 	},
 	{
 		type: "threshold",
-		message0: "min %1 max %2 keys %3",
+		message0: "atLeast %1 of %2 keys %3",
 		args0: [
 			{
 				type: "field_number",
@@ -178,9 +194,9 @@ export const blocks = [
 				value: 1,
 			},
 			{
-				type: "field_number",
+				type: "field_label",
 				name: "max",
-				value: 1,
+				text: "0",
 			},
 			{
 				type: "input_statement",
