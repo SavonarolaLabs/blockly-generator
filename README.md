@@ -1,8 +1,11 @@
-# Blockly Sample App
+# ErgoScript Blockly Sample App
+
+## Please Note
+You can use [Ergo Script Playground](https://escript.online) to compile generated code in your webbrowser.
 
 ## Purpose
 
-This app illustrates how to use Blockly together with common programming tools like node/npm, webpack, typescript, eslint, and others. You can use it as the starting point for your own application and modify it as much as you'd like. It contains basic infrastructure for running, building, testing, etc. that you can use even if you don't understand how to configure the related tool yet. When your needs outgrow the functionality provided here, you can replace the provided configuration or tool with your own.
+This app illustrates how to use Blockly together with common programming tools like node/npm, webpack, typescript, eslint, and others to generate ErgoScript multisigs.
 
 ## Quick Start
 
@@ -37,11 +40,8 @@ You can disable, reconfigure, or replace any of these tools at any time, but the
 ### Source Code
 
 - `index.html` contains the skeleton HTML for the page. This file is modified during the build to import the bundled source code output by webpack.
-- `index.js` is the entry point of the app. It configures Blockly and sets up the page to show the blocks, the generated code, and the output of running the code in JavaScript.
-- `serialization.js` has code to save and load the workspace using the browser's local storage. This is how your workspace is saved even after refreshing or leaving the page. You could replace this with code that saves the user's data to a cloud database instead.
-- `toolbox.js` contains the toolbox definition for the app. The current toolbox contains nearly every block that Blockly provides out of the box. You probably want to replace this definition with your own toolbox that uses your custom blocks and only includes the default blocks that are relevant to your application.
-- `blocks/text.js` has code for a custom text block, just as an example of creating your own blocks. You probably want to delete this block, and add your own blocks in this directory.
-- `generators/javascript.js` contains the JavaScript generator for the custom text block. You'll need to include block generators for any custom blocks you create, in whatever programming language(s) your application will use.
+- `index.js` is the entry point of the app. It configures Blockly and sets up the page to show the blocks, the generated code.
+- `ergoscript.js` has custom ergo blocks and a simple serializer to ergoscript.
 
 ## Serving
 
